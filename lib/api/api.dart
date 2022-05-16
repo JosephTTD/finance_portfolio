@@ -53,6 +53,7 @@ Future<List<PortfolioModel>> fetchPortfolio({String interval = '', required List
     // If the server did return a 200 OK response,
     // then parse the JSON.
     value.add(PortfolioModel.fromJson(jsonDecode(results[response].body)));
-  }
+  } 
+   inspect(results);
   return value;
 }

@@ -152,9 +152,11 @@ class _PortfolioState extends State<Portfolio> {
                             );
                           }),
                     );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text('No data',
-                        style: TextStyle(color: Colors.white));
+                  } else if (snapshot.hasData) {
+                    if (snapshot.data!.isEmpty) {
+                      return const Text('No data',
+                          style: TextStyle(fontSize: 20));
+                    }
                   }
                 }
                 return const CircularProgressIndicator.adaptive(
@@ -206,7 +208,7 @@ class _PortfolioState extends State<Portfolio> {
                             padding: MaterialStateProperty.all(
                                 const EdgeInsets.only(top: 14, bottom: 14)),
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xff353842))),
+                          const Color(0xff353842))),
                         onPressed: () {
                           setState(() {
                             Navigator.pop(context);
@@ -442,7 +444,7 @@ class _PortfolioState extends State<Portfolio> {
                                   activeTime = i;
                                 });
                               },
-                              child: Text(i == '' ? 'Current' : i.toUpperCase(),
+                              child: Text(i == '' ? 'Current' : i,
                                   style: const TextStyle(
                                       fontSize: 11, color: Colors.white))),
                       ],
