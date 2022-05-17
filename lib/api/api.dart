@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:finance_portfolio/models/portfolio.dart';
 import 'package:finance_portfolio/models/trend.dart';
 import 'package:http/http.dart' as http;
-import 'dart:developer';
 
 String apiKey = 'y7vtvjSntG12lD5g7cSWZ4zcszBI1CyZSnBlRYYf';
 String baseUrl = 'https://yfapi.net';
@@ -34,8 +33,6 @@ Future<List<PortfolioModel>> fetchPortfolio({String interval = '', required List
 
   var value = <PortfolioModel>[];
   var urls = <Future<dynamic>>[];
-  
-  inspect(ticker);
 
   for (var i = 0; i < ticker.length; i++) {
     var url = '$baseUrl/$portfolio/' + ticker[i];
@@ -54,6 +51,5 @@ Future<List<PortfolioModel>> fetchPortfolio({String interval = '', required List
     // then parse the JSON.
     value.add(PortfolioModel.fromJson(jsonDecode(results[response].body)));
   } 
-   inspect(results);
   return value;
 }

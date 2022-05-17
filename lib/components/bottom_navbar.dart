@@ -12,10 +12,14 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
+
+    double h = MediaQuery.of(context).size.height;
+    
     return Container(
       color: const Color(0xff272a34),
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
+          // ignore: prefer_const_constructors
+          padding: EdgeInsets.fromLTRB(20, h * 0.04, 20, h * 0.04),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

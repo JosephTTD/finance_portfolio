@@ -17,9 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: const Color(0xff24242a),
       bottomNavigationBar: const BottomNavigation(),
-      body: _content(),
+      body: SingleChildScrollView(child: _content()),
     );
   }
 

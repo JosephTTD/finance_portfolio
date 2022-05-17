@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:finance_portfolio/components/portfolio/app_bar.dart';
 import 'package:finance_portfolio/components/portfolio/block.dart';
 import 'package:finance_portfolio/components/portfolio/chart.dart';
 import 'package:finance_portfolio/components/portfolio/reusable_functions.dart';
@@ -106,7 +107,7 @@ class _PortfolioState extends State<Portfolio> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
                     return SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.42,
+                      height: MediaQuery.of(context).size.height * 0.5,
                       child: ListView.builder(
                           itemCount: snapshot.data!.length,
                           shrinkWrap: true,
@@ -208,7 +209,7 @@ class _PortfolioState extends State<Portfolio> {
                             padding: MaterialStateProperty.all(
                                 const EdgeInsets.only(top: 14, bottom: 14)),
                             backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color(0xff353842))),
+                                const Color(0xff353842))),
                         onPressed: () {
                           setState(() {
                             Navigator.pop(context);
@@ -380,91 +381,76 @@ class _PortfolioState extends State<Portfolio> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
+        double h = MediaQuery.of(context).size.height;
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Scaffold(
               backgroundColor: const Color(0xff24242a),
+              appBar: const PreferredSize(
+                  preferredSize: Size.fromHeight(5000), child: StatAppBar()),
               bottomNavigationBar: const StatBar(sell: true),
-              body: Padding(
-                padding: const EdgeInsets.only(top: 70, left: 25, right: 25),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1, color: Color(0xff2b2e35)))),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 18.0),
-                        child: Row(
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 25, right: 25, bottom: h * 0.07),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 30),
+                        PortfolioBlock(
+                          chartShow: false,
+                          name: data.meta!.exchangeName!,
+                          chart: const [],
+                          title: data.meta!.symbol!,
+                          previous: data.meta!.chartPreviousClose!,
+                          regular: data.meta!.regularMarketPrice!,
+                          currency: data.meta!.currency!,
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Icon(Icons.arrow_back_ios,
-                                  color: Colors.white, size: 18),
-                            ),
-                            const BlockTitle(title: 'Statistic'),
-                            const SizedBox(width: 10),
+                            for (var i in timeScales)
+                              TextButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              activeTime == i
+                                                  ? const Color(0xff353842)
+                                                  : Colors.transparent),
+                                      fixedSize: MaterialStateProperty.all<Size>(
+                                          const Size(10, 10))),
+                                  onPressed: () {
+                                    setState(() {
+                                      _fetchPortfolio(number: i, list: selected);
+                                      Navigator.of(context).pop();
+                                      activeTime = i;
+                                    });
+                                  },
+                                  child: Text(i == '' ? 'Current' : i,
+                                      style: const TextStyle(
+                                          fontSize: 11, color: Colors.white))),
                           ],
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    PortfolioBlock(
-                      chartShow: false,
-                      name: data.meta!.exchangeName!,
-                      chart: const [],
-                      title: data.meta!.symbol!,
-                      previous: data.meta!.chartPreviousClose!,
-                      regular: data.meta!.regularMarketPrice!,
-                      currency: data.meta!.currency!,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        for (var i in timeScales)
-                          TextButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          activeTime == i
-                                              ? const Color(0xff353842)
-                                              : Colors.transparent),
-                                  fixedSize: MaterialStateProperty.all<Size>(
-                                      const Size(10, 10))),
-                              onPressed: () {
-                                setState(() {
-                                  _fetchPortfolio(number: i, list: selected);
-                                  Navigator.of(context).pop();
-                                  activeTime = i;
-                                });
-                              },
-                              child: Text(i == '' ? 'Current' : i,
-                                  style: const TextStyle(
-                                      fontSize: 11, color: Colors.white))),
+                        const SizedBox(height: 20),
+                        StatChart(
+                            positive: posOrNeg(data.meta!.regularMarketPrice!,
+                                data.meta!.chartPreviousClose!),
+                            data: open),
+                        const SizedBox(height: 30),
+                        _row(
+                            'High Price',
+                            data.indicators!.quote![0].high![0]
+                                .toStringAsFixed(2),
+                            data.meta!.currency!),
+                        const SizedBox(height: 20),
+                        _row(
+                            'Low Price',
+                            data.indicators!.quote![0].low![0].toStringAsFixed(2),
+                            data.meta!.currency!),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    StatChart(
-                        positive: posOrNeg(data.meta!.regularMarketPrice!,
-                            data.meta!.chartPreviousClose!),
-                        data: open),
-                    const SizedBox(height: 30),
-                    _row(
-                        'High Price',
-                        data.indicators!.quote![0].high![0].toStringAsFixed(2),
-                        data.meta!.currency!),
-                    const SizedBox(height: 20),
-                    _row(
-                        'Low Price',
-                        data.indicators!.quote![0].low![0].toStringAsFixed(2),
-                        data.meta!.currency!),
-                  ],
+                  ),
                 ),
               ));
         });

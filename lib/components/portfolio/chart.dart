@@ -19,7 +19,7 @@ class _StatChartState extends State<StatChart> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 10, right: 10),
-      height: MediaQuery.of(context).size.height * 0.37,
+      height: MediaQuery.of(context).size.height * 0.34,
       child: SfSparkLineChart(
           color: widget.positive == true
               ? const Color(0xff406e56)
