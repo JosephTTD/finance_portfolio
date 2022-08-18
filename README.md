@@ -1,6 +1,6 @@
 # finance_portfolio
 
-Flutter app using the yahoo finance api
+1 day Flutter app code challenge using the yahoo finance api
 
 ## Usability
 
